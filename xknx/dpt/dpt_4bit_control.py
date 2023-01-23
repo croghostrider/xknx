@@ -36,8 +36,7 @@ class DPTControlStepCode(DPTBase, ABC):
     def _encode(cls, control: bool, step_code: int) -> int:
         """Encode control-bit with step-code."""
         value = 1 if control > 0 else 0
-        value = (value << 3) | (step_code & cls.APCI_STEPCODEMASK)
-        return value
+        return (value << 3) | (step_code & cls.APCI_STEPCODEMASK)
 
     @classmethod
     def _decode(cls, value: int) -> tuple[bool, int]:
@@ -55,10 +54,7 @@ class DPTControlStepCode(DPTBase, ABC):
     @classmethod
     def _test_values(cls, step_code: int) -> bool:
         """Test if input values are valid."""
-        if isinstance(step_code, int):
-            if 0 <= step_code <= cls.APCI_STEPCODEMASK:
-                return True
-        return False
+        return isinstance(step_code, int) and 0 <= step_code <= cls.APCI_STEPCODEMASK
 
     @classmethod
     def to_knx(cls, value: Any) -> tuple[int]:
@@ -216,9 +212,7 @@ class DPTControlStartStop(DPTControlStepCode):
         values = super().from_knx(raw)
         if values["step_code"] == 0:
             return cls.Direction(2)  # STOP
-        if values["control"] == 0:
-            return cls.Direction(0)  # DECREASE/UP
-        return cls.Direction(1)  # INCREASE/DOWN
+        return cls.Direction(0) if values["control"] == 0 else cls.Direction(1)
 
 
 class DPTControlStartStopDimming(DPTControlStartStop):

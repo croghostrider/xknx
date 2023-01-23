@@ -66,9 +66,7 @@ class TPCI(ABC):
             if control or numbered:
                 raise ConversionError("Invalid TPCI flags in group addressed frame.")
             if not sequence_number:
-                if dst_is_zero:
-                    return TDataBroadcast()
-                return TDataGroup()
+                return TDataBroadcast() if dst_is_zero else TDataGroup()
             if sequence_number == 1:
                 # TDataTagGroup uses sequence number field as flag
                 return TDataTagGroup()

@@ -137,9 +137,7 @@ class AddressFilter:
         def _adjust_range(digit: int) -> int:
             if digit > GroupAddress.MAX_FREE:
                 return GroupAddress.MAX_FREE
-            if digit < 0:
-                return 0
-            return digit
+            return max(digit, 0)
 
         def _flip_range_if_necessary(self) -> None:
             if self.range_from > self.range_to:
@@ -151,7 +149,7 @@ class AddressFilter:
 
         def match(self, digit: int) -> bool:
             """Return if given digit is within range of pattern."""
-            return bool(self.range_from <= digit <= self.range_to)
+            return self.range_from <= digit <= self.range_to
 
     class LevelFilter:
         """Class for filtering patterns like "8,11-14,20"."""
@@ -167,7 +165,4 @@ class AddressFilter:
 
         def match(self, digit: int) -> bool:
             """Return if given digit is within range of pattern."""
-            for _range in self.ranges:
-                if _range.match(digit):
-                    return True
-            return False
+            return any(_range.match(digit) for _range in self.ranges)

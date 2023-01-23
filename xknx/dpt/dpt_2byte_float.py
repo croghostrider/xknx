@@ -49,7 +49,7 @@ class DPT2ByteFloat(DPTNumeric):
     def to_knx(cls, value: float) -> tuple[int, int]:
         """Serialize to KNX/IP raw data."""
         try:
-            knx_value = float(value)
+            knx_value = value
             if not cls._test_boundaries(knx_value):
                 raise ValueError
 

@@ -53,13 +53,14 @@ class DPTTime(DPTBase):
             )
 
         _default_time = time.strptime("", "")
-        weekday = 0
-        # if 0 year, 1 month, 2 day, 6 weekday, 7 yearday, 8 dst are equal to default assume "any weekday" (0)
-        for index in [0, 1, 2, 6, 7, 8]:
-            if value[index] is not _default_time[index]:
-                weekday = value.tm_wday + 1
-                break
-
+        weekday = next(
+            (
+                value.tm_wday + 1
+                for index in [0, 1, 2, 6, 7, 8]
+                if value[index] is not _default_time[index]
+            ),
+            0,
+        )
         return (weekday << 5 | value.tm_hour, value.tm_min, value.tm_sec)
 
     @staticmethod
@@ -69,8 +70,4 @@ class DPTTime(DPTBase):
             return False
         if hours < 0 or hours > 23:
             return False
-        if minutes < 0 or minutes > 59:
-            return False
-        if seconds < 0 or seconds > 59:
-            return False
-        return True
+        return False if minutes < 0 or minutes > 59 else seconds >= 0 and seconds <= 59

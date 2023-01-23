@@ -33,7 +33,7 @@ class DPTString(DPTBase):
     def to_knx(cls, value: str) -> tuple[int, ...]:
         """Serialize to KNX/IP raw data."""
         try:
-            knx_value = str(value)
+            knx_value = value
             if not cls._test_boundaries(knx_value):
                 raise ValueError
         except ValueError:

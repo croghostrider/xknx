@@ -43,7 +43,7 @@ class DPTScaling(DPTNumeric):
     def to_knx(cls, value: float) -> tuple[int]:
         """Serialize to KNX/IP raw data."""
         try:
-            percent_value = float(value)
+            percent_value = value
             if not cls._test_boundaries(percent_value):
                 raise ValueError
             delta = cls.value_max - cls.value_min

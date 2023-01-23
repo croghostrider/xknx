@@ -183,14 +183,14 @@ class Climate(Device):
     @property
     def initialized_for_setpoint_shift_calculations(self) -> bool:
         """Test if object is initialized for setpoint shift calculations."""
-        if (
-            self._setpoint_shift.initialized
-            and self._setpoint_shift.value is not None
-            and self.target_temperature.initialized
-            and self.target_temperature.value is not None
-        ):
-            return True
-        return False
+        return bool(
+            (
+                self._setpoint_shift.initialized
+                and self._setpoint_shift.value is not None
+                and self.target_temperature.initialized
+                and self.target_temperature.value is not None
+            )
+        )
 
     async def set_target_temperature(self, target_temperature: float) -> None:
         """Send new target temperature or setpoint_shift to KNX bus."""

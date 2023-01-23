@@ -107,10 +107,7 @@ class IndividualAddress(BaseAddress):
         if isinstance(address, IndividualAddress):
             self.raw = address.raw
         elif isinstance(address, str):
-            if address.isdigit():
-                self.raw = int(address)
-            else:
-                self.raw = self.__string_to_int(address)
+            self.raw = int(address) if address.isdigit() else self.__string_to_int(address)
         elif isinstance(address, tuple) and len(address) == 2:
             self.raw = address_tuple_to_int(address)
         elif isinstance(address, int):
@@ -215,10 +212,7 @@ class GroupAddress(BaseAddress):
         if isinstance(address, GroupAddress):
             self.raw = address.raw
         elif isinstance(address, str):
-            if address.isdigit():
-                self.raw = int(address)
-            else:
-                self.raw = self.__string_to_int(address)
+            self.raw = int(address) if address.isdigit() else self.__string_to_int(address)
         elif isinstance(address, tuple) and len(address) == 2:
             self.raw = address_tuple_to_int(address)
         elif isinstance(address, int):
@@ -256,9 +250,8 @@ class GroupAddress(BaseAddress):
                 raise CouldNotParseAddress(address)
             if sub > self.MAX_SUB_LONG:
                 raise CouldNotParseAddress(address)
-        else:
-            if sub > self.MAX_SUB_SHORT:
-                raise CouldNotParseAddress(address)
+        elif sub > self.MAX_SUB_SHORT:
+            raise CouldNotParseAddress(address)
         return (
             (main << 11) + (middle << 8) + sub
             if middle is not None
@@ -336,12 +329,9 @@ class InternalGroupAddress:
         if not isinstance(address, str):
             raise CouldNotParseAddress(address)
 
-        prefix_length = 1
-        if len(address) < 2 or not address[0].lower() == "i":
+        if len(address) < 2 or address[0].lower() != "i":
             raise CouldNotParseAddress(address)
-        if address[1] in "-_":
-            prefix_length = 2
-
+        prefix_length = 2 if address[1] in "-_" else 1
         self.address = address[prefix_length:].strip()
         if not self.address:
             raise CouldNotParseAddress(address)

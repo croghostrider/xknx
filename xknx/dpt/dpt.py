@@ -109,20 +109,28 @@ class DPTBase(ABC):
         cls: T, dpt_main: int, dpt_sub: int | None = None
     ) -> T | None:
         """Return Class reference of DPTBase subclass with matching DPT number."""
-        for dpt in cls.dpt_class_tree():
-            if dpt.has_distinct_dpt_numbers():
-                if dpt_main == dpt.dpt_main_number and dpt_sub == dpt.dpt_sub_number:
-                    return dpt
-        return None
+        return next(
+            (
+                dpt
+                for dpt in cls.dpt_class_tree()
+                if dpt.has_distinct_dpt_numbers()
+                and dpt_main == dpt.dpt_main_number
+                and dpt_sub == dpt.dpt_sub_number
+            ),
+            None,
+        )
 
     @classmethod
     def transcoder_by_value_type(cls: T, value_type: str) -> T | None:
         """Return Class reference of DPTBase subclass with matching value_type."""
-        for dpt in cls.dpt_class_tree():
-            if dpt.has_distinct_value_type():
-                if value_type == dpt.value_type:
-                    return dpt
-        return None
+        return next(
+            (
+                dpt
+                for dpt in cls.dpt_class_tree()
+                if dpt.has_distinct_value_type() and value_type == dpt.value_type
+            ),
+            None,
+        )
 
     @classmethod
     def parse_transcoder(cls: T, value_type: int | str) -> T | None:
@@ -185,9 +193,7 @@ class DPTBinary:
 
     def __eq__(self, other: object) -> bool:
         """Equal operator."""
-        if isinstance(other, DPTBinary):
-            return self.value == other.value
-        return False
+        return self.value == other.value if isinstance(other, DPTBinary) else False
 
     def __repr__(self) -> str:
         """Return object representation."""
@@ -215,9 +221,7 @@ class DPTArray:
 
     def __eq__(self, other: object) -> bool:
         """Equal operator."""
-        if isinstance(other, DPTArray):
-            return self.value == other.value
-        return False
+        return self.value == other.value if isinstance(other, DPTArray) else False
 
     def __repr__(self) -> str:
         """Return object representation."""

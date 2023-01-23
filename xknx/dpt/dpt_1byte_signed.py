@@ -26,9 +26,7 @@ class DPTSignedRelativeValue(DPTNumeric):
     def from_knx(cls, raw: tuple[int, ...]) -> int:
         """Parse/deserialize from KNX/IP raw data."""
         cls.test_bytesarray(raw)
-        if raw[0] > cls.value_max:
-            return raw[0] - 0x100
-        return raw[0]
+        return raw[0] - 0x100 if raw[0] > cls.value_max else raw[0]
 
     @classmethod
     def to_knx(cls, value: int | float) -> tuple[int]:

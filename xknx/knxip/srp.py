@@ -44,12 +44,12 @@ class SRP:
             self.validate_payload_length(SRP.MAC_ADDRESS_PAYLOAD_LENGTH)
             self.payload_size = SRP.SRP_HEADER_SIZE + SRP.MAC_ADDRESS_PAYLOAD_LENGTH
         elif self.type == SearchRequestParameterType.REQUEST_DIBS:
-            if not self.data or len(self.data) < 1:
+            if not self.data:
                 raise ConversionError("Srp DIBs are not present.")
             # If the Client is interested in an odd number of DIBs
             # it shall add an additional Description Type 0 to make the structure length even
             if len(self.data) % 2:
-                self.data = self.data + bytes([0])
+                self.data += bytes([0])
             self.payload_size = SRP.SRP_HEADER_SIZE + len(self.data)
 
     def validate_payload_length(self, size: int) -> None:
@@ -151,12 +151,13 @@ class SRP:
 
     def __eq__(self, other: object) -> bool:
         """Define equality for SRPs."""
-        if not isinstance(other, SRP):
-            return False
-
         return (
-            self.payload_size == other.payload_size
-            and self.type == other.type
-            and self.mandatory == other.mandatory
-            and self.data == other.data
+            (
+                self.payload_size == other.payload_size
+                and self.type == other.type
+                and self.mandatory == other.mandatory
+                and self.data == other.data
+            )
+            if isinstance(other, SRP)
+            else False
         )

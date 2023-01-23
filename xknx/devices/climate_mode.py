@@ -275,16 +275,12 @@ class ClimateMode(Device):
     @property
     def operation_modes(self) -> list[HVACOperationMode]:
         """Return all configured operation modes."""
-        if not self.supports_operation_mode:
-            return []
-        return self._operation_modes
+        return self._operation_modes if self.supports_operation_mode else []
 
     @property
     def controller_modes(self) -> list[HVACControllerMode]:
         """Return all configured controller modes."""
-        if not self.supports_controller_mode:
-            return []
-        return self._controller_modes
+        return self._controller_modes if self.supports_controller_mode else []
 
     def gather_operation_modes(self) -> list[HVACOperationMode]:
         """Gather operation modes from RemoteValues."""
@@ -308,11 +304,9 @@ class ClimateMode(Device):
         """Process incoming and outgoing GROUP WRITE telegram."""
         if self.supports_operation_mode:
             for rv_mode in self._iter_operation_remote_values():
-                if await rv_mode.process(telegram):
-                    #  ignore inactive RemoteValueBinaryOperationMode
-                    if rv_mode.value:
-                        await self._set_internal_operation_mode(rv_mode.value)
-                        return
+                if await rv_mode.process(telegram) and rv_mode.value:
+                    await self._set_internal_operation_mode(rv_mode.value)
+                    return
 
         if self.supports_controller_mode:
             for rv_controller in self._iter_controller_remote_values():
