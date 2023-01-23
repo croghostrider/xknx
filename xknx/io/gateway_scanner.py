@@ -184,13 +184,13 @@ class GatewayScanFilter:
             and gateway.tunnelling_requires_secure
         ):
             return True
-        if (
-            self.secure_routing
-            and gateway.supports_routing
-            and gateway.routing_requires_secure
-        ):
-            return True
-        return False
+        return bool(
+            (
+                self.secure_routing
+                and gateway.supports_routing
+                and gateway.routing_requires_secure
+            )
+        )
 
     def __eq__(self, other: object) -> bool:
         """Equality for GatewayScanFilter class."""
@@ -315,9 +315,7 @@ class GatewayScanner:
             logger.warning("Could not understand knxipframe")
             return
 
-        # skip non-extended SearchResponse for Core-V2 devices
-        if knx_ip_frame.header.service_type_ident == KNXIPServiceType.SEARCH_RESPONSE:
-            if svc_families_dib := next(
+        if svc_families_dib := next(
                 (
                     dib
                     for dib in knx_ip_frame.body.dibs
@@ -325,9 +323,13 @@ class GatewayScanner:
                 ),
                 None,
             ):
-                if svc_families_dib.supports(DIBServiceFamily.CORE, version=2):
-                    logger.debug("Skipping SearchResponse for Core-V2 device")
-                    return
+            if (
+                knx_ip_frame.header.service_type_ident
+                == KNXIPServiceType.SEARCH_RESPONSE
+                and svc_families_dib.supports(DIBServiceFamily.CORE, version=2)
+            ):
+                logger.debug("Skipping SearchResponse for Core-V2 device")
+                return
 
         gateway = GatewayDescriptor(
             ip_addr=knx_ip_frame.body.control_endpoint.ip_addr,

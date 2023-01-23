@@ -25,11 +25,7 @@ class DPTDate(DPTBase):
         if not DPTDate._test_range(day, month, year):
             raise ConversionError("Could not parse DPTDate", raw=raw)
 
-        if year >= 90:
-            year += 1900
-        else:
-            year += 2000
-
+        year += 1900 if year >= 90 else 2000
         try:
             # strptime conversion used for catching exceptions; filled with default values
             return time.strptime(f"{year} {month} {day}", "%Y %m %d")
@@ -57,8 +53,4 @@ class DPTDate(DPTBase):
         """Test if the values are in the correct range."""
         if day < 1 or day > 31:
             return False
-        if month < 1 or month > 12:
-            return False
-        if year < 0 or year > 99:
-            return False
-        return True
+        return False if month < 1 or month > 12 else year >= 0 and year <= 99

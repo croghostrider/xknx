@@ -37,7 +37,7 @@ class Scene(Device):
             feature_name="Scene number",
             after_update_cb=self.after_update,
         )
-        self.scene_number = int(scene_number)
+        self.scene_number = scene_number
 
     def _iter_remote_values(self) -> Iterator[RemoteValueSceneNumber]:
         """Iterate the devices RemoteValue classes."""

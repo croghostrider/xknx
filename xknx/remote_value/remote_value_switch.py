@@ -40,7 +40,7 @@ class RemoteValueSwitch(RemoteValue[DPTBinary, bool]):
             feature_name=feature_name,
             after_update_cb=after_update_cb,
         )
-        self.invert = bool(invert)
+        self.invert = invert
 
     def payload_valid(self, payload: DPTArray | DPTBinary | None) -> DPTBinary:
         """Test if telegram payload may be parsed."""

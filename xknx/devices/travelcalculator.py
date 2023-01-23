@@ -89,9 +89,11 @@ class TravelCalculator:
 
     def current_position(self) -> int | None:
         """Return current (calculated or known) position."""
-        if not self._position_confirmed:
-            return self._calculate_position()
-        return self._last_known_position
+        return (
+            self._last_known_position
+            if self._position_confirmed
+            else self._calculate_position()
+        )
 
     def is_traveling(self) -> bool:
         """Return if cover is traveling."""
@@ -134,12 +136,10 @@ class TravelCalculator:
                 and self.travel_direction == TravelStatus.DIRECTION_DOWN
             ):
                 return True
-            if (
+            return (
                 relative_position >= 0
                 and self.travel_direction == TravelStatus.DIRECTION_UP
-            ):
-                return True
-            return False
+            )
 
         if position_reached_or_exceeded(relative_position):
             return self._travel_to_position

@@ -112,6 +112,4 @@ def _parse_payload(
         return value
     if transcoder := _parse_dpt(value_type):
         return DPTArray(transcoder.to_knx(value))
-    if isinstance(value, int):
-        return DPTBinary(value)
-    return DPTArray(value)
+    return DPTBinary(value) if isinstance(value, int) else DPTArray(value)

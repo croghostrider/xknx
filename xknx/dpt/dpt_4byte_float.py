@@ -56,7 +56,7 @@ class DPT4ByteFloat(DPTNumeric):
     def to_knx(cls, value: float) -> tuple[int, ...]:
         """Serialize to KNX/IP raw data."""
         try:
-            knx_value = float(value)
+            knx_value = value
             return tuple(struct.pack(">f", knx_value))
         except (ValueError, struct.error):
             raise ConversionError(f"Could not serialize {cls.__name__}", vlaue=value)
