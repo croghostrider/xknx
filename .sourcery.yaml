@@ -23,34 +23,7 @@ ignore: # A list of paths or files which Sourcery will ignore.
 rule_settings:
   enable:
   - default
-  disable: [assign-if-exp,
- raise-from-previous-error,
- swap-if-expression,
- reintroduce-else,
- use-fstring-for-concatenation ,
- merge-nested-ifs,
- remove-unnecessary-cast,
- boolean-if-exp-identity,
- use-next,
- list-comprehension,
- use-any,
- merge-else-if-into-elif,
- remove-redundant-if,
- remove-redundant-slice-index,
- swap-nested-ifs,
- hoist-similar-statement-from-if,
- move-assign-in-block,
- remove-zero-from-range,
- replace-interpolation-with-fstring,
- aug-assign,
- de-morgan,
- inline-immediately-returned-variable,
- introduce-default-else,
- invert-any-all, 
- merge-duplicate-blocks,
- min-max-identity,
- simplify-len-comparison,
- switch]  # A list of rule IDs Sourcery will never suggest.
+  disable: [ raise-from-previous-error, remove-unnecessary-cast]
   rule_types:
   - refactoring
   - suggestion
